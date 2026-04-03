@@ -102,9 +102,10 @@
     .db-badge { color: #2D2D2D !important; }
     .db-badge--new { background: #2D5DA1 !important; color: #fff !important; }
     .db-separator { border-color: #e0dcd4 !important; }
-    .db-accordion__trigger { color: #2D2D2D !important; background: #fff !important; border: 2px solid #e0dcd4 !important; }
+    .db-accordion { border: 2px solid #e0dcd4 !important; border-radius: 8px !important; overflow: hidden; box-shadow: 3px 3px 0 #2D2D2D; }
+    .db-accordion__trigger { color: #2D2D2D !important; background: #fff !important; border: none !important; border-bottom: 1px solid #e0dcd4 !important; }
     .db-accordion__trigger:hover { background: #f5f0e8 !important; }
-    .db-accordion__content { background: #FDFBF7 !important; border: 2px solid #e0dcd4 !important; border-top: none !important; }
+    .db-accordion__content { background: #FDFBF7 !important; border: none !important; border-bottom: 1px solid #e0dcd4 !important; }
     .db-alert { background: #f5f0e8 !important; border: 2px solid #e0dcd4 !important; color: #2D2D2D !important; }
     .db-alert p { color: #4A4A4A !important; }
     .db-btn--primary { background: #2D5DA1 !important; color: #fff !important; border: 2px solid #2D2D2D !important; box-shadow: 2px 2px 0 #2D2D2D; }
@@ -133,9 +134,10 @@
       .db-badge { color: #e5e0d5 !important; }
       .db-badge--new { background: #2D5DA1 !important; color: #fff !important; }
       .harn-section--surface { background: #141310 !important; }
-      .db-accordion__trigger { color: #e5e0d5 !important; background: #242219 !important; border-color: #3d3a30 !important; }
+      .db-accordion__trigger { color: #e5e0d5 !important; background: #1e1c16 !important; border: none !important; border-bottom: 1px solid #3d3a30 !important; }
       .db-accordion__trigger:hover { background: #2e2b22 !important; }
-      .db-accordion__content { background: #1a1915 !important; border-color: #3d3a30 !important; }
+      .db-accordion__content { background: #1a1915 !important; border: none !important; border-bottom: 1px solid #3d3a30 !important; }
+      .db-accordion { border: 1px solid #3d3a30 !important; border-radius: 8px !important; overflow: hidden; box-shadow: 3px 3px 0 #0a0a08 !important; }
       .db-alert { background: #242219 !important; border-color: #3d3a30 !important; }
       .db-alert p { color: #b5ae9f !important; }
       .db-btn--primary { background: #2D5DA1 !important; box-shadow: 2px 2px 0 #0a0a08 !important; border-color: #0a0a08 !important; }
@@ -517,11 +519,16 @@
       </div>
 
       <!-- One-liner value prop -->
-      <div class="db-alert" style="margin-top:2rem;text-align:center;border-color:var(--harn-green);background:rgba(52,211,153,0.05);">
-        <div class="db-alert__content">
-          <p class="db-body" style="font-size:1rem;">Every time an agent makes a mistake, your job is not to fix the code. <strong style="color:var(--harn-green);">Your job is to engineer the harness so the agent can never make that mistake again.</strong></p>
-        </div>
-      </div>
+      <blockquote style="margin: 2.5rem auto 0; max-width: 700px; padding: 1.5rem 2rem; border-left: 4px solid #2D5DA1; background: rgba(45,93,161,0.05); border-radius: 0 8px 8px 0;">
+        <p style="font-family: 'Caveat', cursive; font-size: 1.4rem; line-height: 1.5; color: #2D2D2D; margin-bottom: 0.75rem;">"A well-built outer harness increases the probability that the agent gets it right in the first place, and provides a feedback loop that self-corrects as many issues as possible before they even reach human eyes."</p>
+        <footer style="display: flex; align-items: center; gap: 0.75rem;">
+          <img src="https://martinfowler.com/mf.jpg" alt="Martin Fowler" width="36" height="36" style="border-radius: 50%; border: 2px solid #e0dcd4;">
+          <cite style="font-style: normal; font-size: 0.85rem;">
+            <a href="https://martinfowler.com/articles/harness-engineering.html" target="_blank" rel="noopener" style="color: #2D5DA1; text-decoration: none; font-weight: 600;">Martin Fowler</a>
+            <span style="color: #8a8070;"> — Harness Engineering for Coding Agent Users</span>
+          </cite>
+        </footer>
+      </blockquote>
     </div>
   </section>
 
