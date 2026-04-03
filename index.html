@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="ink-dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>harn.app — Harness Engineering for AI Coding Agents</title>
+  <meta name="description" content="Stop prompting, start harnessing. Build the environment, toolchains, and safety constraints where your AI coding agent operates reliably. CAR framework, security guardrails, quality gates.">
+  <meta name="keywords" content="harness engineering, AI coding agents, Claude Code, CAR framework, AGENTS.md, hooks, guardrails, quality gates, progressive disclosure, context engineering">
+  <meta name="author" content="Sliday">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://harn.app">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://harn.app">
+  <meta property="og:title" content="harn.app — Harness Engineering for AI Coding Agents">
+  <meta property="og:description" content="Stop prompting, start harnessing. The extra-model infrastructure that makes AI coding agents reliable.">
+  <meta property="og:image" content="https://pub-f608db8450114a73a35fc96ad58ad73c.r2.dev/og/harn-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="harn.app — Harness Engineering for AI Coding Agents">
+  <meta name="twitter:description" content="Stop prompting, start harnessing. The extra-model infrastructure that makes AI coding agents reliable.">
+  <meta name="twitter:image" content="https://pub-f608db8450114a73a35fc96ad58ad73c.r2.dev/og/harn-og.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+
+  <!-- DAUB UI -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daub-ui@latest/daub.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300..900&family=Cabin:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "harn",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "macOS, Linux, Windows",
+    "description": "Harness Engineering plugin for Claude Code — CAR framework, security guardrails, quality gates, progressive disclosure",
+    "url": "https://harn.app",
+    "author": {
+      "@type": "Organization",
+      "name": "Sliday",
+      "url": "https://github.com/sliday"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <style>
+    :root {
+      --harn-green: #34d399;
+      --harn-dark: #0a0a0a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--db-bg, #111);
+      color: var(--db-text, #e5e5e5);
+      min-height: 100vh;
+      margin: 0;
+    }
+    .harn-accent { color: var(--harn-green); }
+    .harn-glow { text-shadow: 0 0 60px rgba(52, 211, 153, 0.3); }
+
+    .harn-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem;
+    }
+    .harn-section--surface {
+      background: var(--db-surface, #1a1a1a);
+    }
+    .section-title {
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .section-subtitle {
+      text-align: center;
+      color: var(--db-text-muted, #888);
+      margin-bottom: 3rem;
+    }
+
+    /* Hero */
+    .harn-hero {
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 2rem;
+    }
+    .harn-hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      line-height: 1.08;
+      margin-bottom: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .harn-hero .lead {
+      font-size: 1.2rem;
+      color: var(--db-text-muted, #888);
+      margin-bottom: 2rem;
+      max-width: 540px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Grid layouts */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* Timeline */
+    .timeline-track {
+      position: relative;
+    }
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      top: 1.75rem;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(to right, #f59e0b, #3b82f6, var(--harn-green));
+      z-index: 0;
+    }
+    @media (max-width: 768px) {
+      .timeline-track::before { display: none; }
+    }
+    .timeline-track .db-card { position: relative; z-index: 1; }
+
+    /* Video */
+    .video-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .video-wrap video {
+      width: 100%;
+      display: block;
+    }
+
+    /* CAR icon boxes */
+    .car-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .car-icon--red { background: rgba(239, 68, 68, 0.15); }
+    .car-icon--blue { background: rgba(59, 130, 246, 0.15); }
+    .car-icon--green { background: rgba(52, 211, 153, 0.15); }
+
+    .car-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .car-list li {
+      padding: 0.3rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Install code block */
+    .install-code {
+      background: var(--db-surface, #1a1a1a);
+      padding: 1.25rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+    .install-code .comment { color: var(--db-text-muted, #666); }
+    .install-code .cmd { color: var(--harn-green); }
+
+    /* Accordion code */
+    pre {
+      background: var(--db-surface, #1a1a1a);
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="db-navbar" style="border-bottom: 1px solid var(--db-border);">
+    <div class="db-navbar__brand">
+      <span style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em;">harn<span class="harn-accent">.app</span></span>
+    </div>
+    <div class="db-navbar__spacer"></div>
+    <div class="db-navbar__actions">
+      <a href="https://github.com/sliday/harn" class="db-btn db-btn--ghost db-btn--sm">
+        <i data-lucide="github" style="width:16px;height:16px;"></i> GitHub
+      </a>
+      <a href="#install" class="db-btn db-btn--primary db-btn--sm">Get the Plugin</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="harn-hero">
+    <div style="max-width: 700px;">
+      <div class="db-badge db-badge--new" style="margin-bottom: 1.5rem;">Generation 3 of AI Interaction</div>
+      <h1 class="harn-glow">Stop Prompting.<br>Start <span class="harn-accent">Harnessing.</span></h1>
+      <p class="lead">The underlying AI model matters less than the system built around it. Build the environment, toolchains, and safety constraints where your AI agent operates.</p>
+      <div class="hero-cta">
+        <a href="#install" class="db-btn db-btn--primary db-btn--lg">Install Plugin</a>
+        <a href="#car" class="db-btn db-btn--secondary db-btn--lg">Learn the Framework</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="harn-section" id="video" style="padding-top: 0;">
+    <div class="video-wrap">
+      <div class="db-card" style="overflow: hidden; border: 1px solid var(--db-border);">
+        <video controls preload="metadata" style="width: 100%; display: block;">
+          <source src="https://pub-f608db8450114a73a35fc96ad58ad73c.r2.dev/video/bottleneck-shift.mp4" type="video/mp4">
+        </video>
+        <div style="padding: 1rem 1.5rem;">
+          <h3 class="db-h4" style="margin-bottom: 0.25rem;">The Bottleneck Shift: How We Learned to Control AI</h3>
+          <p class="db-caption" style="color: var(--db-text-muted);">A visual explainer of the three generations of AI interaction</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFOGRAPHIC -->
+  <section class="harn-section" id="infographic" style="padding-top: 2rem;">
+    <div style="max-width: 1000px; margin: 0 auto;">
+      <img
+        src="https://pub-f608db8450114a73a35fc96ad58ad73c.r2.dev/img/harness-engineering-infographic.png"
+        alt="Harness Engineering: The New Paradigm for Reliable AI Agents — infographic showing three evolutions of AI interaction (Prompt Engineering, Context Engineering, Harness Engineering) and the core pillars (Guides vs Sensors, Context Firewall, Deterministic Control Flow)"
+        width="1400"
+        height="788"
+        loading="lazy"
+        style="width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--db-border);"
+      >
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="harn-section" id="timeline">
+    <h2 class="db-h2 section-title">The Three Evolutions</h2>
+    <p class="db-body section-subtitle">How we went from talking to AI to building systems around it</p>
+
+    <div class="grid-3 timeline-track">
+      <div class="db-card">
+        <div style="padding: 1.5rem;">
+          <div class="db-badge" style="background: #f59e0b; color: #000; margin-bottom: 1rem;">2022–2023</div>
+          <h3 class="db-h4">Prompt Engineering</h3>
+          <p class="db-caption" style="margin-bottom: 0.75rem; color: var(--db-text-muted);">Point of influence: <strong>Wording</strong></p>
+          <p class="db-body">Focusing on phrasing and "diplomacy" to get the best one-shot response from a model.</p>
+          <div class="db-separator" style="margin: 1rem 0;"></div>
+          <p class="db-caption" style="color: var(--db-text-muted); font-style: italic;">"How do I phrase this so the AI understands?"</p>
+        </div>
+      </div>
+      <div class="db-card">
+        <div style="padding: 1.5rem;">
+          <div class="db-badge" style="background: #3b82f6; color: #fff; margin-bottom: 1rem;">2024–2025</div>
+          <h3 class="db-h4">Context Engineering</h3>
+          <p class="db-caption" style="margin-bottom: 0.75rem; color: var(--db-text-muted);">Point of influence: <strong>Information</strong></p>
+          <p class="db-body">Dynamically managing the information and documents the AI sees within its limited context window.</p>
+          <div class="db-separator" style="margin: 1rem 0;"></div>
+          <p class="db-caption" style="color: var(--db-text-muted); font-style: italic;">"What does the AI need to know to do this work?"</p>
+        </div>
+      </div>
+      <div class="db-card" style="border: 1px solid var(--harn-green);">
+        <div style="padding: 1.5rem;">
+          <div class="db-badge db-badge--new" style="margin-bottom: 1rem;">2026+</div>
+          <h3 class="db-h4">Harness Engineering</h3>
+          <p class="db-caption" style="margin-bottom: 0.75rem; color: var(--db-text-muted);">Point of influence: <strong>System / Environment</strong></p>
+          <p class="db-body">Building the environment, toolchains, and safety constraints where the AI operates autonomously.</p>
+          <div class="db-separator" style="margin: 1rem 0;"></div>
+          <p class="db-caption" style="color: var(--harn-green); font-style: italic;">"What environment ensures the AI works safely?"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAR FRAMEWORK -->
+  <section class="harn-section harn-section--surface" id="car">
+    <h2 class="db-h2 section-title">The C.A.R. Framework</h2>
+    <p class="db-body section-subtitle">Every agentic system has three layers</p>
+
+    <div class="grid-3">
+      <div class="db-card">
+        <div style="padding: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="car-icon car-icon--red"><i data-lucide="shield" style="width:20px;height:20px;color:#ef4444;"></i></div>
+            <h3 class="db-h4" style="margin:0;">Control</h3>
+          </div>
+          <p class="db-caption" style="color:var(--db-text-muted);margin-bottom:1rem;">Constraints &amp; Specifications</p>
+          <p class="db-body" style="margin-bottom:1rem;">Don't ask the agent to write good code — <strong>mechanically enforce</strong> what good code looks like.</p>
+          <div class="db-separator" style="margin-bottom:1rem;"></div>
+          <ul class="car-list">
+            <li><i data-lucide="file-text" style="width:14px;height:14px;color:var(--db-text-muted);"></i> AGENTS.md</li>
+            <li><i data-lucide="check-circle" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Linters &amp; type checkers</li>
+            <li><i data-lucide="test-tube" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Tests as contracts</li>
+            <li><i data-lucide="git-branch" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Architectural rules</li>
+          </ul>
+        </div>
+      </div>
+      <div class="db-card">
+        <div style="padding: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="car-icon car-icon--blue"><i data-lucide="wrench" style="width:20px;height:20px;color:#3b82f6;"></i></div>
+            <h3 class="db-h4" style="margin:0;">Agency</h3>
+          </div>
+          <p class="db-caption" style="color:var(--db-text-muted);margin-bottom:1rem;">Tools &amp; Interfaces</p>
+          <p class="db-body" style="margin-bottom:1rem;">Define how the model is <strong>allowed to act</strong> — scope its tools, not just its knowledge.</p>
+          <div class="db-separator" style="margin-bottom:1rem;"></div>
+          <ul class="car-list">
+            <li><i data-lucide="plug" style="width:14px;height:14px;color:var(--db-text-muted);"></i> MCP servers</li>
+            <li><i data-lucide="users" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Sub-agent delegation</li>
+            <li><i data-lucide="globe" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Browser / GUI access</li>
+            <li><i data-lucide="lock" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Permission boundaries</li>
+          </ul>
+        </div>
+      </div>
+      <div class="db-card">
+        <div style="padding: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <div class="car-icon car-icon--green"><i data-lucide="play" style="width:20px;height:20px;color:var(--harn-green);"></i></div>
+            <h3 class="db-h4" style="margin:0;">Runtime</h3>
+          </div>
+          <p class="db-caption" style="color:var(--db-text-muted);margin-bottom:1rem;">Execution &amp; Recovery</p>
+          <p class="db-body" style="margin-bottom:1rem;">Govern how work unfolds over time — <strong>deterministic hooks</strong> as reflex arcs.</p>
+          <div class="db-separator" style="margin-bottom:1rem;"></div>
+          <ul class="car-list">
+            <li><i data-lucide="zap" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Lifecycle hooks</li>
+            <li><i data-lucide="rotate-ccw" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Retry &amp; rollback</li>
+            <li><i data-lucide="minimize-2" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Context compaction</li>
+            <li><i data-lucide="activity" style="width:14px;height:14px;color:var(--db-text-muted);"></i> Trace collection</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THREE PILLARS -->
+  <section class="harn-section" id="pillars">
+    <h2 class="db-h2 section-title">The Core Pillars of a Robust Harness</h2>
+    <p class="db-body section-subtitle">Three patterns that make the difference</p>
+
+    <div class="grid-3">
+      <div class="db-card">
+        <div style="padding: 1.5rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <i data-lucide="compass" style="width:24px;height:24px;color:#f59e0b;"></i>
+            <h3 class="db-h4" style="margin:0;">Guides vs. Sensors</h3>
+          </div>
+          <p class="db-body">Use feedforward <strong>Guides</strong> to steer behavior and feedback <strong>Sensors</strong> (linters/tests) for self-correction.</p>
+          <div class="db-alert db-alert--warning" style="margin-top:1rem;">
+            <div class="db-alert__content">
+              <p class="db-caption">Guide = AGENTS.md tells the agent what to do<br>Sensor = Type checker tells the agent what went wrong</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="db-card">
+        <div style="padding: 1.5rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <i data-lucide="shield-off" style="width:24px;height:24px;color:#ef4444;"></i>
+            <h3 class="db-h4" style="margin:0;">The Context Firewall</h3>
+          </div>
+          <p class="db-body">Use <strong>sub-agents</strong> to isolate tasks, preventing "context rot" from accumulating irrelevant tool-call noise.</p>
+          <div class="db-alert" style="margin-top:1rem;">
+            <div class="db-alert__content">
+              <p class="db-caption">Delegate research to a sub-agent — only the summary returns to the parent context</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="db-card">
+        <div style="padding: 1.5rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <i data-lucide="workflow" style="width:24px;height:24px;color:var(--harn-green);"></i>
+            <h3 class="db-h4" style="margin:0;">Deterministic Control Flow</h3>
+          </div>
+          <p class="db-body">Implement <strong>Hooks</strong> (reflex arcs) that automatically trigger security checks or formatters without AI intervention.</p>
+          <div class="db-alert db-alert--warning" style="margin-top:1rem;background:rgba(52,211,153,0.08);border-color:var(--harn-green);">
+            <div class="db-alert__content">
+              <p class="db-caption">PreToolUse — blocks rm -rf<br>PostToolUse — auto-formats<br>Stop — type-checks before done</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAILURE MODES -->
+  <section class="harn-section harn-section--surface" id="failures">
+    <h2 class="db-h2 section-title">Why Your Agent Failed</h2>
+    <p class="db-body section-subtitle">Common failures and their harness solutions</p>
+
+    <div class="db-accordion" data-multi>
+      <div class="db-accordion__item">
+        <button class="db-accordion__trigger">
+          <span><i data-lucide="repeat" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent got stuck in an infinite loop</span>
+        </button>
+        <div class="db-accordion__content">
+          <div style="padding:1rem;">
+            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> Stop Hook with <code>stop_hook_active</code> check</p>
+            <pre><code>PAYLOAD=$(cat /dev/stdin)
+IS_ACTIVE=$(echo "$PAYLOAD" | jq -r '.stop_hook_active // false')
+if [ "$IS_ACTIVE" = "true" ]; then
+  exit 0  # Break the loop
+fi</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="db-accordion__item">
+        <button class="db-accordion__trigger">
+          <span><i data-lucide="trash-2" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent deleted important files</span>
+        </button>
+        <div class="db-accordion__content">
+          <div style="padding:1rem;">
+            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> PreToolUse security guard</p>
+            <pre><code>dangerous = [r"rm\s+-r[fF]", r"git\s+push\s+.*main"]
+for pattern in dangerous:
+    if re.search(pattern, command):
+        sys.exit(2)  # Block the command</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="db-accordion__item">
+        <button class="db-accordion__trigger">
+          <span><i data-lucide="brain" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent ignored my instructions</span>
+        </button>
+        <div class="db-accordion__content">
+          <div style="padding:1rem;">
+            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> Progressive disclosure — your AGENTS.md is too long</p>
+            <p class="db-body">Keep AGENTS.md under 60 lines. Extract domain rules into separate skill files that load on demand.</p>
+          </div>
+        </div>
+      </div>
+      <div class="db-accordion__item">
+        <button class="db-accordion__trigger">
+          <span><i data-lucide="bug" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent produced broken code</span>
+        </button>
+        <div class="db-accordion__content">
+          <div style="padding:1rem;">
+            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> Quality gate Stop hook</p>
+            <pre><code>npx tsc --noEmit &gt; /tmp/gate.log 2&gt;&amp;1 || {
+  echo "QUALITY GATE FAILED" &gt;&amp;2
+  cat /tmp/gate.log &gt;&amp;2
+  exit 2  # Block completion
+}</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="db-accordion__item">
+        <button class="db-accordion__trigger">
+          <span><i data-lucide="scroll-text" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent context got too long and dumb</span>
+        </button>
+        <div class="db-accordion__content">
+          <div style="padding:1rem;">
+            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> Context Firewall — sub-agent delegation</p>
+            <p class="db-body">Delegate research tasks to sub-agents. Only the condensed result returns to the parent, keeping the main context clean.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTALL -->
+  <section class="harn-section" id="install">
+    <h2 class="db-h2 section-title">Get Started in 30 Seconds</h2>
+    <p class="db-body section-subtitle">Install the plugin, scaffold your harness</p>
+
+    <div style="max-width: 600px; margin: 0 auto;">
+      <div class="db-card" style="border: 1px solid var(--harn-green);">
+        <div style="padding: 1.5rem;">
+          <div class="db-stepper" style="margin-bottom:1.5rem;">
+            <div class="db-stepper__step db-stepper__step--completed"><span>1</span> Add marketplace</div>
+            <div class="db-stepper__step db-stepper__step--active"><span>2</span> Install plugin</div>
+            <div class="db-stepper__step db-stepper__step--pending"><span>3</span> Scaffold harness</div>
+          </div>
+
+          <div class="install-code">
+            <span class="comment"># Step 1: Add the marketplace</span><br>
+            <span class="cmd">claude plugins marketplace add sliday/claude-plugins</span><br><br>
+            <span class="comment"># Step 2: Install harn</span><br>
+            <span class="cmd">claude plugins install harn</span><br><br>
+            <span class="comment"># Step 3: In your project, run:</span><br>
+            <span class="cmd">/harn:init</span>
+          </div>
+
+          <p class="db-caption" style="color:var(--db-text-muted);">Works with Claude Code. Support for other agents coming soon.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LLM-FRIENDLY SUMMARY (hidden visually, visible to crawlers) -->
+  <section class="db-sr-only" aria-label="Summary for search engines and LLMs">
+    <h2>What is Harness Engineering?</h2>
+    <p>Harness Engineering is the practice of building extra-model infrastructure — the environment, toolchains, and safety constraints — that channels an AI coding agent's power, defines its constraints, and verifies its work. It is the third generation of AI interaction, following Prompt Engineering (2022-2023) and Context Engineering (2024-2025).</p>
+    <h2>The CAR Framework</h2>
+    <p>CAR stands for Control, Agency, Runtime. Control defines constraints and specifications (AGENTS.md, linters, tests). Agency defines tools and interfaces (MCP servers, sub-agents). Runtime governs execution and recovery (hooks, retries, rollback).</p>
+    <h2>Key Principles</h2>
+    <ul>
+      <li>Guides vs Sensors: Use feedforward guides (AGENTS.md) and feedback sensors (linters, tests)</li>
+      <li>Context Firewall: Use sub-agents to isolate tasks and prevent context rot</li>
+      <li>Deterministic Control Flow: Use hooks (PreToolUse, PostToolUse, Stop) as reflex arcs</li>
+      <li>Progressive Disclosure: Keep AGENTS.md lean, load detailed rules on demand via skills</li>
+    </ul>
+    <h2>Installation</h2>
+    <p>Install via Claude Code: claude plugins marketplace add sliday/claude-plugins && claude plugins install harn. Then run /harn:init in your project.</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="padding: 2rem 1.5rem; text-align: center; border-top: 1px solid var(--db-border);">
+    <p class="db-caption" style="color: var(--db-text-muted); margin-bottom: 0.75rem;">
+      <a href="https://github.com/sliday/harn" style="color: var(--harn-green);">Plugin Source</a> ·
+      <a href="https://github.com/sliday/harn-app" style="color: var(--db-text-muted);">Site Source</a>
+    </p>
+    <p style="font-size: 0.75rem; color: var(--db-text-muted);">
+      Made by <a href="https://x.com/staskulesh" target="_blank" rel="noopener" style="color: var(--harn-green); text-decoration: none;">@staskulesh</a> <a href="https://aichess.co/static/easter-egg/index.html" title="&#127875;" style="text-decoration: none; display: inline-block; transition: transform 0.2s; transform: scale(1);" onmouseover="this.style.transform='scale(1.3)'" onmouseout="this.style.transform='scale(1)'">&#128007;</a>
+    </p>
+  </footer>
+
+  <!-- DAUB JS + Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/daub-ui@latest/daub.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof DAUB !== 'undefined') {
+        DAUB.setFamily('ink');
+        DAUB.setScheme('dark');
+      }
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+  </script>
+</body>
+</html>
