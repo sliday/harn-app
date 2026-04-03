@@ -162,6 +162,10 @@
       .install-step--active .install-step__num { background: #D4A017; }
       .install-step--pending .install-step__num { background: #3d3a30; color: #8a8070; }
       .install-step__line { background: #3d3a30; }
+      blockquote { background: rgba(45,93,161,0.1) !important; border-left-color: #5b8fd4 !important; }
+      blockquote p { color: #e5e0d5 !important; }
+      blockquote cite a { color: #5b8fd4 !important; }
+      blockquote cite span { color: #8a8070 !important; }
       img[src*="shields.io"] { filter: none; }
     }
 
@@ -173,15 +177,7 @@
     .harn-section--surface {
       background: #f0ebe0;
       max-width: none;
-      padding-left: 0;
-      padding-right: 0;
-    }
-    .harn-section--surface > * {
-      max-width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
+      padding: 5rem calc(max(1.5rem, (100% - 1100px) / 2));
     }
     .section-title {
       text-align: center;
