@@ -128,7 +128,8 @@
       gap: 1.5rem;
     }
     @media (max-width: 768px) {
-      .grid-3 { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr !important; }
+      .grid-3 [style*="grid-template-columns: 1fr auto 1fr"] { grid-template-columns: 1fr !important; }
     }
 
     /* Timeline */
@@ -186,30 +187,111 @@
       gap: 0.5rem;
     }
 
-    /* Install code block */
-    .install-code {
-      background: var(--db-surface, #1a1a1a);
-      padding: 1.25rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      overflow-x: auto;
-      font-size: 0.9rem;
-      line-height: 1.7;
+    /* Install steps */
+    .install-steps {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
     }
-    .install-code .comment { color: var(--db-text-muted, #666); }
-    .install-code .cmd { color: var(--harn-green); }
+    .install-step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .install-step__num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    .install-step--done .install-step__num { background: var(--harn-green); color: #000; }
+    .install-step--active .install-step__num { background: var(--db-primary, #3b82f6); color: #fff; }
+    .install-step--pending .install-step__num { background: var(--db-surface, #333); color: var(--db-text-muted); }
+    .install-step__line {
+      flex: 1;
+      height: 2px;
+      background: var(--db-border, #333);
+      min-width: 20px;
+    }
 
-    /* Accordion code */
+    /* Code blocks */
+    .code-block {
+      background: var(--db-surface, #1a1a1a);
+      border: 1px solid var(--db-border, #333);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .code-block__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid var(--db-border, #333);
+      background: rgba(255,255,255,0.03);
+    }
+    .code-block__header span { font-size: 0.75rem; color: var(--db-text-muted); }
+    .code-block__copy {
+      background: none;
+      border: 1px solid var(--db-border, #444);
+      color: var(--db-text-muted);
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.15s;
+    }
+    .code-block__copy:hover { background: var(--harn-green); color: #000; border-color: var(--harn-green); }
+    .code-block pre {
+      margin: 0;
+      padding: 1rem;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+    }
     pre {
       background: var(--db-surface, #1a1a1a);
       padding: 1rem;
       border-radius: 6px;
       overflow-x: auto;
       font-size: 0.85rem;
-      line-height: 1.5;
+      line-height: 1.6;
     }
     code {
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    }
+    .comment { color: var(--db-text-muted, #666); }
+    .cmd { color: var(--harn-green); }
+
+    /* Failure mode details */
+    .failure-detail { margin-bottom: 1rem; }
+    .failure-detail strong { color: var(--harn-green); }
+    .failure-detail .why { color: #ef4444; font-weight: 600; }
+    .failure-detail .fix { color: var(--harn-green); font-weight: 600; }
+    .failure-file {
+      display: inline-block;
+      background: rgba(52,211,153,0.1);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--harn-green);
+    }
+    .failure-hook {
+      display: inline-block;
+      background: rgba(239,68,68,0.1);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: #f87171;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -238,6 +320,106 @@
       <div class="hero-cta">
         <a href="#install" class="db-btn db-btn--primary db-btn--lg">Install Plugin</a>
         <a href="#car" class="db-btn db-btn--secondary db-btn--lg">Learn the Framework</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT IT DOES -->
+  <section class="harn-section" id="what" style="padding-bottom: 2rem;">
+    <h2 class="db-h2 section-title">What does <code style="color:var(--harn-green);">/harn:init</code> actually do?</h2>
+    <p class="db-body section-subtitle" style="max-width: 600px; margin-left: auto; margin-right: auto;">It scaffolds three shell scripts and one config file. Together, they make your AI agent stop breaking things.</p>
+
+    <div style="max-width: 900px; margin: 0 auto;">
+
+      <!-- Before / After -->
+      <div class="grid-3" style="grid-template-columns: 1fr auto 1fr; gap: 1rem; margin-bottom: 3rem; align-items: stretch;">
+        <div class="db-card" style="border: 1px solid #ef4444;">
+          <div style="padding: 1.25rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+              <i data-lucide="x-circle" style="width:18px;height:18px;color:#ef4444;"></i>
+              <span style="font-weight:700;color:#ef4444;font-size:0.85rem;">WITHOUT HARN</span>
+            </div>
+            <ul style="list-style:none;padding:0;margin:0;font-size:0.9rem;line-height:1.8;">
+              <li style="color:var(--db-text-muted);">Agent runs <code>rm -rf src/</code></li>
+              <li style="color:var(--db-text-muted);">Agent pushes broken code to main</li>
+              <li style="color:var(--db-text-muted);">Agent finishes with 47 type errors</li>
+              <li style="color:var(--db-text-muted);">Agent forgets your rules after 10 min</li>
+              <li style="color:var(--db-text-muted);">Agent loops forever on Stop hooks</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:center;padding:0 0.5rem;">
+          <i data-lucide="arrow-right" style="width:24px;height:24px;color:var(--db-text-muted);"></i>
+        </div>
+
+        <div class="db-card" style="border: 1px solid var(--harn-green);">
+          <div style="padding: 1.25rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+              <i data-lucide="check-circle" style="width:18px;height:18px;color:var(--harn-green);"></i>
+              <span style="font-weight:700;color:var(--harn-green);font-size:0.85rem;">WITH HARN</span>
+            </div>
+            <ul style="list-style:none;padding:0;margin:0;font-size:0.9rem;line-height:1.8;">
+              <li>Dangerous commands <strong>blocked</strong> before execution</li>
+              <li>Push to main <strong>intercepted</strong> and denied</li>
+              <li>Agent <strong>can't finish</strong> until types pass</li>
+              <li>AGENTS.md stays lean — skills load on demand</li>
+              <li>Loop prevention baked into every hook</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- What gets created -->
+      <h3 class="db-h4" style="text-align:center;margin-bottom:1.5rem;">Files created by <code style="color:var(--harn-green);">/harn:init</code></h3>
+
+      <div class="grid-3" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="db-card">
+          <div style="padding:1.25rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+              <i data-lucide="file-text" style="width:16px;height:16px;color:var(--harn-green);"></i>
+              <code style="font-size:0.85rem;color:var(--harn-green);">AGENTS.md</code>
+            </div>
+            <p class="db-caption" style="color:var(--db-text-muted);line-height:1.5;">Lean control document (~60 lines). Tells the agent your stack, constraints, and where to find detailed rules. No bloat.</p>
+          </div>
+        </div>
+
+        <div class="db-card">
+          <div style="padding:1.25rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+              <i data-lucide="shield" style="width:16px;height:16px;color:#ef4444;"></i>
+              <code style="font-size:0.85rem;color:#f87171;">security_guard.py</code>
+            </div>
+            <p class="db-caption" style="color:var(--db-text-muted);line-height:1.5;">PreToolUse hook. Intercepts every shell command. Blocks <code>rm -rf</code>, <code>push main</code>, <code>chmod 777</code>, pipe-to-shell, and more.</p>
+          </div>
+        </div>
+
+        <div class="db-card">
+          <div style="padding:1.25rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+              <i data-lucide="shield-check" style="width:16px;height:16px;color:#3b82f6;"></i>
+              <code style="font-size:0.85rem;color:#60a5fa;">quality_gate.sh</code>
+            </div>
+            <p class="db-caption" style="color:var(--db-text-muted);line-height:1.5;">Stop hook. Runs your type-checker (tsc/cargo/go vet/mypy) before the agent can finish. Broken code = blocked.</p>
+          </div>
+        </div>
+
+        <div class="db-card">
+          <div style="padding:1.25rem;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+              <i data-lucide="settings" style="width:16px;height:16px;color:var(--db-text-muted);"></i>
+              <code style="font-size:0.85rem;color:var(--db-text-muted);">.claude/settings.json</code>
+            </div>
+            <p class="db-caption" style="color:var(--db-text-muted);line-height:1.5;">Wires everything together. Maps hooks to lifecycle events (PreToolUse, PostToolUse, Stop). Zero manual config.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- One-liner value prop -->
+      <div class="db-alert" style="margin-top:2rem;text-align:center;border-color:var(--harn-green);background:rgba(52,211,153,0.05);">
+        <div class="db-alert__content">
+          <p class="db-body" style="font-size:1rem;">Every time an agent makes a mistake, your job is not to fix the code. <strong style="color:var(--harn-green);">Your job is to engineer the harness so the agent can never make that mistake again.</strong></p>
+        </div>
       </div>
     </div>
   </section>
@@ -432,64 +614,177 @@
           <span><i data-lucide="repeat" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent got stuck in an infinite loop</span>
         </button>
         <div class="db-accordion__content">
-          <div style="padding:1rem;">
-            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> Stop Hook with <code>stop_hook_active</code> check</p>
-            <pre><code>PAYLOAD=$(cat /dev/stdin)
+          <div style="padding:1rem 1.5rem;">
+            <div class="failure-detail">
+              <p><span class="why">Problem:</span> Your Stop hook runs a type-checker. It fails. The agent tries to fix it. The Stop hook fires again. Fails again. Forever.</p>
+              <p><span class="fix">Fix:</span> Check the <code>stop_hook_active</code> flag in the JSON payload. If the agent is already recovering from a Stop hook failure, let it through.</p>
+              <p>File: <span class="failure-file">scripts/harness/quality_gate.sh</span> &nbsp; Hook: <span class="failure-hook">Stop</span></p>
+            </div>
+            <div class="code-block">
+              <div class="code-block__header"><span>quality_gate.sh</span><button class="code-block__copy" onclick="navigator.clipboard.writeText(this.closest('.code-block').querySelector('code').textContent)">Copy</button></div>
+              <pre><code>#!/usr/bin/env bash
+# Read the hook payload from stdin
+PAYLOAD=$(cat /dev/stdin)
 IS_ACTIVE=$(echo "$PAYLOAD" | jq -r '.stop_hook_active // false')
+
+# CRITICAL: If already in recovery, exit clean to break the loop
 if [ "$IS_ACTIVE" = "true" ]; then
-  exit 0  # Break the loop
-fi</code></pre>
+  exit 0
+fi
+
+# Run your actual check
+npx tsc --noEmit > /tmp/gate.log 2>&amp;1
+if [ $? -ne 0 ]; then
+  echo "QUALITY GATE FAILED. Fix these errors:" >&amp;2
+  cat /tmp/gate.log >&amp;2
+  exit 2  # Block completion — agent must fix first
+fi
+exit 0</code></pre>
+            </div>
+            <p class="db-caption" style="color:var(--db-text-muted);">Wire it: <code>.claude/settings.json</code> → <code>"hooks"</code> → <code>{"event": "Stop", "command": "bash scripts/harness/quality_gate.sh"}</code></p>
           </div>
         </div>
       </div>
+
       <div class="db-accordion__item">
         <button class="db-accordion__trigger">
-          <span><i data-lucide="trash-2" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent deleted important files</span>
+          <span><i data-lucide="trash-2" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent deleted important files or pushed to main</span>
         </button>
         <div class="db-accordion__content">
-          <div style="padding:1rem;">
-            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> PreToolUse security guard</p>
-            <pre><code>dangerous = [r"rm\s+-r[fF]", r"git\s+push\s+.*main"]
-for pattern in dangerous:
+          <div style="padding:1rem 1.5rem;">
+            <div class="failure-detail">
+              <p><span class="why">Problem:</span> The agent ran <code>rm -rf</code> on your source directory, or <code>git push origin main</code> with untested code. No guardrail stopped it.</p>
+              <p><span class="fix">Fix:</span> A PreToolUse hook intercepts every Bash command before execution. If it matches a dangerous pattern, exit 2 blocks it.</p>
+              <p>File: <span class="failure-file">scripts/harness/security_guard.py</span> &nbsp; Hook: <span class="failure-hook">PreToolUse (match: Bash)</span></p>
+            </div>
+            <div class="code-block">
+              <div class="code-block__header"><span>security_guard.py</span><button class="code-block__copy" onclick="navigator.clipboard.writeText(this.closest('.code-block').querySelector('code').textContent)">Copy</button></div>
+              <pre><code>#!/usr/bin/env python3
+import sys, json, re
+
+payload = json.load(sys.stdin)
+if payload.get("tool_name") != "Bash":
+    sys.exit(0)  # Only guard shell commands
+
+command = payload.get("parameters", {}).get("command", "")
+
+BLOCKED = [
+    r"rm\s+-r[fF]",           # Recursive forced deletion
+    r"git\s+push\s+.*main",   # Push to main branch
+    r"git\s+push\s+.*master", # Push to master branch
+    r"chmod\s+777",           # Reckless permissions
+    r"curl\s+.*\|\s*(?:sudo\s+)?(?:bash|sh)",  # Pipe to shell
+    r">\s*~/",                # Overwrite home dotfiles
+]
+
+for pattern in BLOCKED:
     if re.search(pattern, command):
-        sys.exit(2)  # Block the command</code></pre>
+        print(f"BLOCKED: {pattern}", file=sys.stderr)
+        sys.exit(2)  # Block execution
+
+sys.exit(0)  # Allow</code></pre>
+            </div>
+            <p class="db-caption" style="color:var(--db-text-muted);">Wire it: <code>"hooks"</code> → <code>{"event": "PreToolUse", "match": "Bash", "command": "python3 scripts/harness/security_guard.py"}</code></p>
           </div>
         </div>
       </div>
+
       <div class="db-accordion__item">
         <button class="db-accordion__trigger">
-          <span><i data-lucide="brain" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent ignored my instructions</span>
+          <span><i data-lucide="brain" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent ignored my instructions after 10 minutes</span>
         </button>
         <div class="db-accordion__content">
-          <div style="padding:1rem;">
-            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> Progressive disclosure — your AGENTS.md is too long</p>
-            <p class="db-body">Keep AGENTS.md under 60 lines. Extract domain rules into separate skill files that load on demand.</p>
+          <div style="padding:1rem 1.5rem;">
+            <div class="failure-detail">
+              <p><span class="why">Problem:</span> Your 500-line AGENTS.md worked for the first task. By the third task, the agent forgot half of it. Performance degrades as irrelevant context fills the window.</p>
+              <p><span class="fix">Fix:</span> Progressive Disclosure. Keep AGENTS.md under 60 lines. Extract domain rules into skill files that load on demand when relevant.</p>
+              <p>File: <span class="failure-file">AGENTS.md</span> (max 60 lines) + <span class="failure-file">skills/api-reviewer/SKILL.md</span> (loaded on demand)</p>
+            </div>
+            <div class="code-block">
+              <div class="code-block__header"><span>AGENTS.md — lean root file</span><button class="code-block__copy" onclick="navigator.clipboard.writeText(this.closest('.code-block').querySelector('code').textContent)">Copy</button></div>
+              <pre><code># Agent North Star
+Write reliable code within architectural boundaries.
+
+## Stack
+React + TypeScript + Express
+
+## Constraints
+- Never push to main
+- UI must not access DB directly — use services/ layer
+- If stuck 3 times on same error, ask the human
+
+## Active Hooks
+- PreToolUse: security guard blocks dangerous commands
+- Stop: type-checker must pass before completion
+
+## Skills (load when relevant)
+- API work → load skills/api-reviewer
+- DB work → load skills/db-schema</code></pre>
+            </div>
+            <p class="db-caption" style="color:var(--db-text-muted);">Rule of thumb: if you can't read your AGENTS.md in 30 seconds, it's too long. The agent feels the same way.</p>
           </div>
         </div>
       </div>
+
       <div class="db-accordion__item">
         <button class="db-accordion__trigger">
-          <span><i data-lucide="bug" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent produced broken code</span>
+          <span><i data-lucide="bug" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent produced code with type errors and regressions</span>
         </button>
         <div class="db-accordion__content">
-          <div style="padding:1rem;">
-            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> Quality gate Stop hook</p>
-            <pre><code>npx tsc --noEmit &gt; /tmp/gate.log 2&gt;&amp;1 || {
-  echo "QUALITY GATE FAILED" &gt;&amp;2
-  cat /tmp/gate.log &gt;&amp;2
-  exit 2  # Block completion
+          <div style="padding:1rem 1.5rem;">
+            <div class="failure-detail">
+              <p><span class="why">Problem:</span> You woke up to a massive PR full of broken code. The agent finished the task, but <code>tsc</code> shows 47 errors and 3 tests fail.</p>
+              <p><span class="fix">Fix:</span> A Stop hook acts as back-pressure. The agent cannot complete until the type-checker and tests pass. It's forced to fix its own mess.</p>
+              <p>File: <span class="failure-file">scripts/harness/quality_gate.sh</span> &nbsp; Hook: <span class="failure-hook">Stop</span></p>
+            </div>
+            <div class="code-block">
+              <div class="code-block__header"><span>.claude/settings.json — wire all three hooks</span><button class="code-block__copy" onclick="navigator.clipboard.writeText(this.closest('.code-block').querySelector('code').textContent)">Copy</button></div>
+              <pre><code>{
+  "hooks": {
+    "PreToolUse": [{
+      "match": "Bash",
+      "command": "python3 scripts/harness/security_guard.py"
+    }],
+    "PostToolUse": [{
+      "match": "Edit|Write",
+      "command": "npx prettier --write $FILE_PATH"
+    }],
+    "Stop": [{
+      "command": "bash scripts/harness/quality_gate.sh"
+    }]
+  }
 }</code></pre>
+            </div>
+            <p class="db-caption" style="color:var(--db-text-muted);">The PostToolUse hook auto-formats every file edit. The Stop hook catches type errors. Together they produce clean, passing code.</p>
           </div>
         </div>
       </div>
+
       <div class="db-accordion__item">
         <button class="db-accordion__trigger">
-          <span><i data-lucide="scroll-text" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent context got too long and dumb</span>
+          <span><i data-lucide="scroll-text" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:0.5rem;"></i>Agent got dumber the longer the session ran</span>
         </button>
         <div class="db-accordion__content">
-          <div style="padding:1rem;">
-            <p class="db-body" style="margin-bottom:1rem;"><strong>Missing:</strong> Context Firewall — sub-agent delegation</p>
-            <p class="db-body">Delegate research tasks to sub-agents. Only the condensed result returns to the parent, keeping the main context clean.</p>
+          <div style="padding:1rem 1.5rem;">
+            <div class="failure-detail">
+              <p><span class="why">Problem:</span> After 30 minutes, the agent starts repeating itself, forgetting constraints, and producing lower-quality output. The context window is full of grep results, file reads, and intermediate thinking.</p>
+              <p><span class="fix">Fix:</span> Context Firewall via sub-agents. Delegate research, grepping, and exploration to sub-agents. Only the condensed answer returns to the parent — not the 500 lines of grep output.</p>
+            </div>
+            <div class="code-block">
+              <div class="code-block__header"><span>Example: sub-agent delegation pattern</span><button class="code-block__copy" onclick="navigator.clipboard.writeText(this.closest('.code-block').querySelector('code').textContent)">Copy</button></div>
+              <pre><code># In AGENTS.md, instruct the agent:
+## Context Management
+- For codebase searches: delegate to a sub-agent
+- For research tasks: delegate to a sub-agent
+- Sub-agents return ONLY the answer (max 200 words)
+- Never paste raw grep output into main context
+
+# The sub-agent gets a fresh context window.
+# It searches, processes, and returns only:
+# "The function is in src/auth/login.ts:42"
+# NOT the 200 lines of grep results.</code></pre>
+            </div>
+            <p class="db-caption" style="color:var(--db-text-muted);">Think of it like this: you don't read every email in the company — your assistant summarizes them for you. Sub-agents are that assistant for context.</p>
           </div>
         </div>
       </div>
@@ -501,22 +796,27 @@ for pattern in dangerous:
     <h2 class="db-h2 section-title">Get Started in 30 Seconds</h2>
     <p class="db-body section-subtitle">Install the plugin, scaffold your harness</p>
 
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div style="max-width: 640px; margin: 0 auto;">
       <div class="db-card" style="border: 1px solid var(--harn-green);">
         <div style="padding: 1.5rem;">
-          <div class="db-stepper" style="margin-bottom:1.5rem;">
-            <div class="db-stepper__step db-stepper__step--completed"><span>1</span> Add marketplace</div>
-            <div class="db-stepper__step db-stepper__step--active"><span>2</span> Install plugin</div>
-            <div class="db-stepper__step db-stepper__step--pending"><span>3</span> Scaffold harness</div>
+          <div class="install-steps">
+            <div class="install-step install-step--done"><span class="install-step__num">1</span> Add marketplace</div>
+            <div class="install-step__line"></div>
+            <div class="install-step install-step--active"><span class="install-step__num">2</span> Install</div>
+            <div class="install-step__line"></div>
+            <div class="install-step install-step--pending"><span class="install-step__num">3</span> Scaffold</div>
           </div>
 
-          <div class="install-code">
-            <span class="comment"># Step 1: Add the marketplace</span><br>
-            <span class="cmd">claude plugins marketplace add sliday/claude-plugins</span><br><br>
-            <span class="comment"># Step 2: Install harn</span><br>
-            <span class="cmd">claude plugins install harn</span><br><br>
-            <span class="comment"># Step 3: In your project, run:</span><br>
-            <span class="cmd">/harn:init</span>
+          <div class="code-block">
+            <div class="code-block__header"><span>Terminal</span><button class="code-block__copy" onclick="navigator.clipboard.writeText('claude plugins marketplace add sliday/claude-plugins\nclaude plugins install harn\n# Then in your project:\n/harn:init');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button></div>
+            <pre><code><span class="comment"># Step 1: Add the marketplace</span>
+<span class="cmd">claude plugins marketplace add sliday/claude-plugins</span>
+
+<span class="comment"># Step 2: Install harn</span>
+<span class="cmd">claude plugins install harn</span>
+
+<span class="comment"># Step 3: In your project, run:</span>
+<span class="cmd">/harn:init</span></code></pre>
           </div>
 
           <p class="db-caption" style="color:var(--db-text-muted);">Works with Claude Code. Support for other agents coming soon.</p>
@@ -544,10 +844,12 @@ for pattern in dangerous:
 
   <!-- FOOTER -->
   <footer style="padding: 2rem 1.5rem; text-align: center; border-top: 1px solid var(--db-border);">
-    <p class="db-caption" style="color: var(--db-text-muted); margin-bottom: 0.75rem;">
-      <a href="https://github.com/sliday/harn" style="color: var(--harn-green);">Plugin Source</a> ·
-      <a href="https://github.com/sliday/harn-app" style="color: var(--db-text-muted);">Site Source</a>
-    </p>
+    <div style="margin-bottom: 1rem;">
+      <a href="https://github.com/sliday/harn" class="db-btn db-btn--ghost db-btn--sm" style="gap: 0.5rem;">
+        <i data-lucide="star" style="width:14px;height:14px;"></i> Star on GitHub
+      </a>
+      <img src="https://img.shields.io/github/stars/sliday/harn?style=flat&color=34d399&labelColor=1a1a2e" alt="GitHub stars" style="vertical-align: middle; margin-left: 0.5rem; height: 20px;">
+    </div>
     <p style="font-size: 0.75rem; color: var(--db-text-muted);">
       Made by <a href="https://x.com/staskulesh" target="_blank" rel="noopener" style="color: var(--harn-green); text-decoration: none;">@staskulesh</a> <a href="https://aichess.co/static/easter-egg/index.html" title="&#127875;" style="text-decoration: none; display: inline-block; transition: transform 0.2s; transform: scale(1);" onmouseover="this.style.transform='scale(1.3)'" onmouseout="this.style.transform='scale(1)'">&#128007;</a>
     </p>
